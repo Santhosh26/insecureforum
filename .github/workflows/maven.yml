@@ -21,7 +21,7 @@ jobs:
     - name: Build with Maven
       run: |
         mvn -B package --file pom.xml
-        cd
+        #cd
         #cd insecureforum
-        #mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:translate
-        #mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:scan
+        mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:translate
+        mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:scan
