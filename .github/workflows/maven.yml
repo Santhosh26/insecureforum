@@ -19,9 +19,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build with Maven
-      run: |
+      run: 
         mvn -B package --file pom.xml
-        #cd
-        #cd insecureforum
+    - name: Fortify Scan
+      run: |
         mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:translate
         mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:scan
+    - name: Fortify Scan Result Upload
+      run: 
+        fortifyclient -url http://localhost:8080/ssc/ -authtoken d4d0955e-4340-477e-8cde-8cd41a2e3e5f uploadFPR -file "C:\actions-runner\_work\insecureforum\insecureforum\target\fortify\insecureforum-0.0.1-SNAPSHOT.fpr" -applicationVersionID 10000
