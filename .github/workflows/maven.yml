@@ -23,8 +23,8 @@ jobs:
         mvn -B package --file pom.xml
     - name: Fortify Scan
       run: |
-       #mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:translate
-       #mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:scan
+       mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:translate
+       mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:scan
     - name: Fortify Scan Result Upload
       run: 
        fortifyclient -url ${{ secrets.SSCURL }} -authtoken  ${{ secrets.ANALYSISUPLOADTOKEN }} uploadFPR -file ${{ secrets.PATH_TO_FPR }} -applicationVersionID ${{ secrets.APP_VER_ID }}
