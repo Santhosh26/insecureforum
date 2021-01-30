@@ -11,20 +11,30 @@ on:
     
   workflow_dispatch:
 
-jobs:
+jobs:   
   build:
-
+    
     runs-on: fortify
-
+    
     steps:
     - uses: actions/checkout@v2
     - name: Build with Maven
       run: 
         mvn -B package --file pom.xml
-    - name: Fortify Scan
-      run: |
-        mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:translate
-        mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:scan
-    - name: Fortify Scan Result Upload
-      run: 
-        fortifyclient -url ${{ secrets.SSCURL }} -authtoken  ${{ secrets.ANALYSISUPLOADTOKEN }} uploadFPR -file ${{ secrets.PATH_TO_FPR }} -applicationVersionID ${{ secrets.APP_VER_ID }}
+  #  - name: Fortify Scan
+  #    run: |
+  #     mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:translate
+  #      mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:scan
+  #  - name: Fortify Scan Result Upload
+  #    run: 
+  #     fortifyclient -url ${{ secrets.SSCURL }} -authtoken  ${{ secrets.ANALYSISUPLOADTOKEN }} uploadFPR -file ${{ secrets.PATH_TO_FPR }} -applicationVersionID ${{ secrets.APP_VER_ID }}
+  
+  downloadscan:
+    needs: build
+    runs-on: fortify
+    steps:
+      - uses: Amadevus/pwsh-script@v2
+        id: my-script
+        with:
+          script: '1 + 1'
+  run: echo "${{ steps.my-script.outputs.result }}"
