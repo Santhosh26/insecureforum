@@ -21,24 +21,19 @@ jobs:
     - name: Build with Maven
       run: 
         mvn -B package --file pom.xml
-  #  - name: Fortify Scan
-  #    run: |
-  #     mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:translate
-  #      mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:scan
-  #  - name: Fortify Scan Result Upload
-  #    run: 
-  #     fortifyclient -url ${{ secrets.SSCURL }} -authtoken  ${{ secrets.ANALYSISUPLOADTOKEN }} uploadFPR -file ${{ secrets.PATH_TO_FPR }} -applicationVersionID ${{ secrets.APP_VER_ID }}
-    - name: powershell commands
+    - name: Fortify Scan
       run: |
-        echo helloworld
-        ls
-        Install-Module
-#  downloadscan:
-#    needs: build
-#    runs-on: fortify
-#    steps:
-#      - uses: Amadevus/pwsh-script@v2
-#        id: my-script
-#        with:
-#          script: '1 + 1'
-#  run: echo "${{ steps.my-script.outputs.result }}"
+       #mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:translate
+       #mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:scan
+    - name: Fortify Scan Result Upload
+      run: 
+       fortifyclient -url ${{ secrets.SSCURL }} -authtoken  ${{ secrets.ANALYSISUPLOADTOKEN }} uploadFPR -file ${{ secrets.PATH_TO_FPR }} -applicationVersionID ${{ secrets.APP_VER_ID }}
+
+  downloadscan:
+    needs: build
+    runs-on: fortify
+    steps:
+      - name: Powershell request
+        run: |
+          sleep -s 30
+          Invoke-RestMethod -Uri 'http://192.168.45.133:8080/ssc/api/v1/issues?start=0&limit=200&q=sql&fulltextsearch=true' -Headers @{ 'Authorization' = 'FortifyToken YzMyMTliOGUtMmQ3ZC00NzY3LTk0MzItNjZkNzA0NWJmMDNj'}
