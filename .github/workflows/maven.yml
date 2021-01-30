@@ -32,6 +32,7 @@ jobs:
       run: |
         echo helloworld
         ls
+        Install-Module
 #  downloadscan:
 #    needs: build
 #    runs-on: fortify
