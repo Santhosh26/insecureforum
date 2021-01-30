@@ -27,4 +27,4 @@ jobs:
         mvn com.fortify.sca.plugins.maven:sca-maven-plugin:20.2.0:scan
     - name: Fortify Scan Result Upload
       run: 
-        fortifyclient -url http://localhost:8080/ssc/ -authtoken  ${{ secrets.ANALYSISUPLOADTOKEN }} uploadFPR -file "C:\actions-runner\_work\insecureforum\insecureforum\target\fortify\insecureforum-0.0.1-SNAPSHOT.fpr" -applicationVersionID 10000
+        fortifyclient -url ${{ SSCURL }} -authtoken  ${{ secrets.ANALYSISUPLOADTOKEN }} uploadFPR -file ${{ PATH_TO_FPR }} -applicationVersionID ${{ APP_VER_ID }}
