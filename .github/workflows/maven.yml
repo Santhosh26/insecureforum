@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:   
-  Build And Perform Fortify Scan:
+  Build-And-Fortify-Scan:
     
     runs-on: fortify
     
@@ -29,8 +29,8 @@ jobs:
       run: 
        fortifyclient -url ${{ secrets.SSCURL }} -authtoken  ${{ secrets.ANALYSISUPLOADTOKEN }} uploadFPR -file ${{ secrets.PATH_TO_FPR }} -applicationVersionID ${{ secrets.APP_VER_ID }}
 
-  Download Scan Results:
-    needs: Build And Perform Fortify Scan
+  Download-Scan-Results:
+    needs: Build-And-Fortify-Scan
     runs-on: fortify
     steps:
       - name: Download Scan Results from SSC
