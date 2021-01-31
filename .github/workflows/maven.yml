@@ -37,6 +37,8 @@ jobs:
         run: |
           sleep -s 30
           $getresp = Invoke-RestMethod -Uri '${{ secrets.SSCAPIURL }}' -Headers @{ 'Authorization' = '${{ secrets.SSCAPITOKEN }}'  }
-          echo $getresp.count
-          if ( $getresp.count -gt 0 ) { exit(1) }
+          if ( $getresp.data.folderId -eq 1 ) 
+          { 
+            Write-Output "Critial issues exist! Hence, failing the workflow"; exit (1)
+          }
           shell: pwsh
