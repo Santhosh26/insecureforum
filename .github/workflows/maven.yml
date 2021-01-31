@@ -1,16 +1,18 @@
-# This workflow will build a Java project with Maven
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
-name: Java CI with Maven
-
+# This workflow will build a Java project with Maven and Performs Fortify Static Code Analysis. The Workflow will be failed if there is a single critical issue idetified.
+name: Build Java app with Maven and Peform a Fortify Scan
+# This workflow will be triggered on PULL, PUSH and Manually.
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-    
   workflow_dispatch:
 
+# There are two jobs as part of this workflow
+# 1. The first job builds the application, perform a Fortify scan and Uploads the scan results to SSC
+# 2. The second job performs a REST API call to SSC and verifies if critical issue exists. This Job requires a sucessfull completion of first job.
+
+# First Job!
 jobs:   
   Build-And-Fortify-Scan:
     
@@ -29,14 +31,18 @@ jobs:
       run: 
        fortifyclient -url ${{ secrets.SSCURL }} -authtoken  ${{ secrets.ANALYSISUPLOADTOKEN }} uploadFPR -file ${{ secrets.PATH_TO_FPR }} -applicationVersionID ${{ secrets.APP_VER_ID }}
 
+# Second Job!
   Download-Scan-Results:
     needs: Build-And-Fortify-Scan
     runs-on: fortify
     steps:
       - name: Download Scan Results from SSC
         run: |
+          # Sleep gives time SSC to process the scan results
           sleep -s 30
+          
           $getresp = Invoke-RestMethod -Uri '${{ secrets.SSCAPIURL }}' -Headers @{ 'Authorization' = '${{ secrets.SSCAPITOKEN }}'  }
+          
           if ( $getresp.data.folderId -eq 1 ) 
           { 
             Write-Output "Critial issues are identified in the fortify scan result! Hence, failing the workflow"; exit (1)
