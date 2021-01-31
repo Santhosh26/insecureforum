@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:   
-  build:
+  Build And Perform Fortify Scan:
     
     runs-on: fortify
     
@@ -29,8 +29,8 @@ jobs:
       run: 
        fortifyclient -url ${{ secrets.SSCURL }} -authtoken  ${{ secrets.ANALYSISUPLOADTOKEN }} uploadFPR -file ${{ secrets.PATH_TO_FPR }} -applicationVersionID ${{ secrets.APP_VER_ID }}
 
-  downloadscan:
-    needs: build
+  Download Scan Results:
+    needs: Build And Perform Fortify Scan
     runs-on: fortify
     steps:
       - name: Download Scan Results from SSC
@@ -39,6 +39,5 @@ jobs:
           $getresp = Invoke-RestMethod -Uri '${{ secrets.SSCAPIURL }}' -Headers @{ 'Authorization' = '${{ secrets.SSCAPITOKEN }}'  }
           if ( $getresp.data.folderId -eq 1 ) 
           { 
-            Write-Output "Critial issues exist! Hence, failing the workflow"; exit (1)
+            Write-Output "Critial issues are identified in the fortify scan result! Hence, failing the workflow"; exit (1)
           }
-          
