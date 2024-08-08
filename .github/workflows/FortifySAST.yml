@@ -1,0 +1,37 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:    
+      - name: Check out source code
+        uses: actions/checkout@v4  
+      - name: Run ScanCentral SAST Scan
+        uses: fortify/github-action/sc-sast-scan@v1
+        env:
+          SSC_URL: 'http://52.67.113.58:8080/ssc/'
+          SSC_TOKEN: 'b5eaea24-c8cb-4dec-9262-bbafbe3c2225'
+          SC_SAST_TOKEN: ${{secrets.CLIENT_AUTH_TOKEN}}
+          # EXTRA_SC_SAST_LOGIN_OPTS: --socket-timeout=60s
+          # SSC_APPVERSION: MyApp:MyVersion
+          # EXTRA_PACKAGE_OPTS: -bf custom-pom.xml
+          SC_SAST_SENSOR_VERSION: 23.2
+          # DO_WAIT: true
+          # DO_EXPORT: true
+          # TOOL_DEFINITIONS: https://ftfy.mycompany.com/tool-definitions/v1/tool-definitions.yaml.zip
